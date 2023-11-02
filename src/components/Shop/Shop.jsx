@@ -12,6 +12,7 @@ import { Link, useLoaderData } from 'react-router-dom';
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const { count } = useLoaderData();
   const numberOfPage = Math.ceil(count / itemsPerPage);
@@ -24,7 +25,8 @@ const Shop = () => {
 
   /**
    * DONE 1: get the total number of products
-   * TODO 2: number of items per page dynamic
+   * DONE 2: number of items per page dynamic
+   * TODO 3: get the current page
    *
    */
 
@@ -83,8 +85,20 @@ const Shop = () => {
     const val = parseInt(e.target.value);
     console.log(val);
     setItemsPerPage(val);
+    setCurrentPage(0);
   };
 
+  const handlePreviousPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < pages?.length - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
   return (
     <div className="shop-container">
       <div className="products-container">
@@ -104,9 +118,18 @@ const Shop = () => {
         </Cart>
       </div>
       <div className="pagination">
+        <p>Current Page: {currentPage}</p>
+        <button onClick={handlePreviousPage}>Prev</button>
         {pages?.map((page) => (
-          <button key={page}>{page}</button>
+          <button
+            className={currentPage === page && 'selected'}
+            onClick={() => setCurrentPage(page)}
+            key={page}
+          >
+            {page}
+          </button>
         ))}
+        <button onClick={handleNextPage}>Next</button>
         <select
           value={itemsPerPage}
           onChange={handleItemsPerPage}
